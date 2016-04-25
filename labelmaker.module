@@ -1,0 +1,21 @@
+<?php
+/**
+* Implements hook_menu().
+*/
+function labelmaker_menu() {
+  $items['labelmaker'] = array(
+    'title' => 'MOBIUS Labelmaker',
+    'page callback' => 'labelmaker_form',
+    'access arguments' => array('access content'),
+  );
+ 
+  return $items; 
+}
+
+/**
+* Custom callback function.
+*/
+function labelmaker_form() {
+  return '<p>Hello world</p>';
+}
+?>
