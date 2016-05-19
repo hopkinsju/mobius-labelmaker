@@ -1,72 +1,72 @@
 <?php
 drupal_add_js('http://dev.jquery.com/view/trunk/plugins/validate/jquery.validate.js','external');
 print '<script>
-  $(document).ready(function(){
-    $("#labelForm").validate();
-  });
-  </script>
+$(document).ready(function(){
+  $("#labelForm").validate();
+});
+</script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script type="text/javascript">
-  var $jq = jQuery.noConflict();
+var $jq = jQuery.noConflict();
 </script>';
 
 
 function make_a_select_list ($list_name, $list_label, $select_multiple="", $institutions, $required='') {
-$mco_last_from_id = $_COOKIE['labelFrom'];
-
-
-
-//query the database label_maker_nodes 
-$query = "SELECT * FROM label_maker_nodes ORDER BY locName";
-$result = db_query($query);
-//$institutions = db_fetch_array($result);
-print_r($institutions);
-
-// begin the select list
-$list_code = "<p>$list_label Address:   <em><small>(required)</small></em></p><select style='width:50em;' class='$required chosen-select'";
-
-if ( $select_multiple == "" ) {
-$list_code .= "name='$list_name' id='$list_name' data-placeholder='Select a FROM address' tabindex='1'>\n";
-$list_code .= "<option value></option>\n";
-} else {
-$list_code .= "$select_multiple name='$list_name"."[]"."' id='$list_name' size='10' data-placeholder='Click and/or start typing to choose one or more TO addresses' tabindex='2'>\n";
-}
-
-// loop through all the institutions and add them to the list box
-while ($institution = db_fetch_array($result)) {
-//foreach($institutions as $institution) {
-
-$list_code = $list_code . "<option ";
-
-$institutionID = $institution["id"];
-$name = $institution["locName"];
-if (!$institution["is_stop"]) {
-  $name .= " (Delivers to ".$institution["address1"];
-} else {
-$name .=" (" . $institution["state"] . ": " . $institution['locCode'];
-}
-// Uncomment this if MCDAC wants to see OCLC symbols in there
-if ($institution["oclcSymbol"]) {
-  $name .=  " OCLC: " . $institution["oclcSymbol"] . ")";
-} else {
- $name .= ")";
-}
-$state = $institution["state"];
-
-// check to see if the mco_last_from_id cookie equals this node id
-if ( $list_label == "FROM" && $mco_last_from_id == $institutionID ) {
-	$list_code = $list_code . "selected ";
-}
-
-$list_code = $list_code . "value='$institutionID' class='$state'>$name</option>\n";
-}
-
-#end the select list
-$list_code= $list_code . "</select>";
-
-#return the select list
-return($list_code);
-
+  $mco_last_from_id = $_COOKIE['labelFrom'];
+  
+  
+  
+  //query the database label_maker_nodes 
+  $query = "SELECT * FROM label_maker_nodes ORDER BY locName";
+  $result = db_query($query);
+  //$institutions = db_fetch_array($result);
+  print_r($institutions);
+  
+  // begin the select list
+  $list_code = "<p>$list_label Address:   <em><small>(required)</small></em></p><select style='width:50em;' class='$required chosen-select'";
+  
+  if ( $select_multiple == "" ) {
+    $list_code .= "name='$list_name' id='$list_name' data-placeholder='Select a FROM address' tabindex='1'>\n";
+    $list_code .= "<option value></option>\n";
+  } else {
+    $list_code .= "$select_multiple name='$list_name"."[]"."' id='$list_name' size='10' data-placeholder='Click and/or start typing to choose one or more TO addresses' tabindex='2'>\n";
+  }
+  
+  // loop through all the institutions and add them to the list box
+  while ($institution = db_fetch_array($result)) {
+    //foreach($institutions as $institution) {
+    
+    $list_code = $list_code . "<option ";
+    
+    $institutionID = $institution["id"];
+    $name = $institution["locName"];
+    if (!$institution["is_stop"]) {
+      $name .= " (Delivers to ".$institution["address1"];
+    } else {
+      $name .=" (" . $institution["state"] . ": " . $institution['locCode'];
+    }
+    // Uncomment this if MCDAC wants to see OCLC symbols in there
+    if ($institution["oclcSymbol"]) {
+      $name .=  " OCLC: " . $institution["oclcSymbol"] . ")";
+    } else {
+      $name .= ")";
+    }
+    $state = $institution["state"];
+    
+    // check to see if the mco_last_from_id cookie equals this node id
+    if ( $list_label == "FROM" && $mco_last_from_id == $institutionID ) {
+      $list_code = $list_code . "selected ";
+    }
+    
+    $list_code = $list_code . "value='$institutionID' class='$state'>$name</option>\n";
+  }
+  
+  #end the select list
+  $list_code= $list_code . "</select>";
+  
+  #return the select list
+  return($list_code);
+  
 }
 //print the two select lists, FROM and TO
 print '
@@ -104,10 +104,11 @@ print '
 
 <div class="messages">If you encounter any difficulty in using this form, please <a href="mailto:help@mobiusconsortium.org?subject=Label%20maker%20issue">submit a helpdesk ticket</a>.</div>
 <script type="text/javascript" src="/sites/all/libraries/chosen/chosen.jquery.js"></script>
-  <script type="text/javascript">
-	  $jq(".chosen-select").chosen({search_contains: true});
-  </script>
+<script type="text/javascript">
+$jq(".chosen-select").chosen({search_contains: true});
+</script>
 ';
 
 //this function makes a select list for the form below. it is used twice, once for the FROM list and once for the TO list
 ?>
+
