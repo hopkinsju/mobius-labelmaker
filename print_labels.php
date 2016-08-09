@@ -498,7 +498,7 @@ function PrintFrom($toAddress, $fromAddress, $_PosX)
 
 
   // "From" section title
-  if ($toAddress['interSort'] != 'MOB' || $fromAddress['interSort'] != 'MOB') {
+  if (!preg_match('/MOB|IOWA/', $toAddress['interSort']) || !preg_match('/MOB|IOWA/', $fromAddress['interSort'])) {
 	// frombar
 	$shipmentID = uniqid();
 	$this->Rotate(90, $this->GetX()+25,$this->GetY()+25);
@@ -550,8 +550,8 @@ function PrintTo($toAddress, $fromAddress, $_PosX)
   }
 
   // TO Header
-  if ($toAddress['interSort'] == 'MOB' && $fromAddress['interSort'] == 'MOB') {
-    $this->SetFont('Arial', 'B', 60);
+  if (preg_match('/MOB|IOWA/', $toAddress['interSort']) && preg_match('/MOB|IOWA/', $fromAddress['interSort'])) {
+    $this->SetFont('Arial', 'B', 42);
   } else {
     $this->SetFont('Arial', 'B', 32);
     $this->Ln(12);
@@ -565,7 +565,7 @@ function PrintTo($toAddress, $fromAddress, $_PosX)
     $this->SetX(0);
   }
 
-  if ($toAddress['interSort'] == 'MOB' && $fromAddress['interSort'] == 'MOB') {
+  if (preg_match('/MOB|IOWA/', $toAddress['interSort']) && preg_match('/MOB|IOWA/',$fromAddress['interSort'])) {
     $shipmentID = strtoupper($toAddress['statCode'] . '_' . uniqid());
 
     $this->SetXY($this->GetX()+10, $this->GetY()-5);
@@ -583,7 +583,10 @@ function PrintTo($toAddress, $fromAddress, $_PosX)
     }
     $this->SetFont('Arial', 'B', 10);
     $this->SetXY($this->GetX()+40, $this->GetY()+2);
-    $this->Cell(102.5, 8, $toAddress['locName'] . " (" .  $toAddress['locCode'] .")", 0, 1, 'C');
+    if($toAddress['locCode']) {
+      $tmpCode = " ({$toAddress['locCode']})";
+    }
+    $this->Cell(102.5, 8, $toAddress['locName'] . $tmpCode, 0, 1, 'C');
     if ($_PosX >= 142.5) {
       $this->SetX(142.5);
     } else {
@@ -591,7 +594,7 @@ function PrintTo($toAddress, $fromAddress, $_PosX)
     }
     $this->SetXY($this->GetX()+40, $this->GetY()-2);
     $this->Cell(102.5, 8, $shipmentID, 0, 1, 'C');
-  } elseif ($toAddress['interSort'] == 'MOB' && $fromAddress['interSort'] != 'MOB') {
+  } elseif (preg_match('/MOB|IOWA/', $toAddress['interSort']) && preg_match('/MOB|IOWA/',$fromAddress['interSort'])) {
     $this->SetFont('Arial', 'B', 52);
     $this->Cell(142.5, 12, $toAddress['interSort'].':'.$toAddress['statCode'], 0, 1, 'C');
     $this->SetFont('Arial', 'B', 10);
@@ -609,7 +612,7 @@ function PrintTo($toAddress, $fromAddress, $_PosX)
 
   //$this->Ln(2); // Pad the address at the top a little bit
 
-  if ($toAddress['interSort'] == 'MOB' && $fromAddress['interSort'] == 'MOB') {
+  if (preg_match('/MOB|IOWA/', $toAddress['interSort']) && preg_match('/MOB|IOWA/', $fromAddress['interSort'])) {
     //$lineHeight = 5;
     $longLength = 40;
     $maxLength = 50;
@@ -652,7 +655,7 @@ function PrintTo($toAddress, $fromAddress, $_PosX)
       } 
     }
 
-    if ($toAddress['address1'] && $toAddress['interSort'] != 'MOB') {
+    if ($toAddress['address1'] && !preg_match('/MOB|IOWA/',$toAddress['interSort'])) {
       $this->Cell($margin, '', '', 2);
       if (strlen(substr($toAddress['address1'], 0, $maxLength)) > $longLength) {
         $this->SetFontSize(9);
@@ -661,7 +664,7 @@ function PrintTo($toAddress, $fromAddress, $_PosX)
       $this->SetFontSize(11);
     }
 
-    if ($toAddress['address2'] && $toAddress['interSort'] != 'MOB') {
+    if ($toAddress['address2'] && !preg_match('/MOB|IOWA/', $toAddress['interSort'])) {
       $this->Cell($margin, '', '', 2);
       if (strlen(substr($toAddress['address2'], 0, $maxLength)) > $longLength) {
         $this->SetFontSize(9);
@@ -670,7 +673,7 @@ function PrintTo($toAddress, $fromAddress, $_PosX)
       $this->SetFontSize(11);
     }
 
-    if ($toAddress['city'] && $toAddress['state'] && $toAddress['interSort'] != 'MOB') {
+    if ($toAddress['city'] && $toAddress['state'] && !preg_match('/MOB|IOWA/', $toAddress['interSort'])) {
       $this->Cell($margin, '', '', 2);
       if ($toAddress['zip']) {
         $this->Cell($_PosX+30, $lineHeight, $toAddress['city'].', '.$toAddress['state'].' '.$toAddress['zip'], 0, 1);
